@@ -1,0 +1,62 @@
+http:
+  port: 8080
+admin:
+  port: 9876
+  host: localhost
+apiEndpoints:
+  api:
+    host: localhost
+    paths: '/ip'
+  alumnos:
+    host: localhost
+    paths: ['/alumnos']
+  materias:
+    host: localhost
+    paths: ['/materias']
+serviceEndpoints:
+  httpbin:
+    url: 'https://httpbin.org'
+  alumnosService:
+    url: 'http://localhost:3001'
+  materiasService:
+    url: 'http://localhost:3000'
+policies:
+  - basic-auth
+  - cors
+  - expression
+  - key-auth
+  - log
+  - oauth2
+  - proxy
+  - rate-limit
+pipelines:
+  default:
+    apiEndpoints:
+      - api
+    policies:
+    # Uncomment `key-auth:` when instructed to in the Getting Started guide.
+    # - key-auth:
+      - proxy:
+          - action:
+              serviceEndpoint: httpbin 
+              changeOrigin: true
+  alumnosPipeline:
+    apiEndpoints:
+      - alumnos
+    policies:
+    # Uncomment `key-auth:` when instructed to in the Getting Started guide.
+    # - key-auth:
+      - proxy:
+          - action:
+              serviceEndpoint: alumnosService 
+              changeOrigin: true
+  materiasPipeline:
+    apiEndpoints:
+      - materias
+    policies:
+    # Uncomment `key-auth:` when instructed to in the Getting Started guide.
+    # - key-auth:
+      - proxy:
+          - action:
+              serviceEndpoint: materiasService
+              changeOrigin: true
